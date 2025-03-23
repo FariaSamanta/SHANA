@@ -3,7 +3,7 @@ This is the codespace for what i have in mind for my future research project
 
 
 📌 How Code Works (Overview)
-Your eye-tracking cursor with blink click system works in these steps:
+My eye-tracking cursor with blink click system works in these steps:
 Captures video from your webcam.
 Detects your face and eyes using Dlib's face landmark predictor.
 Finds your eye positions and calculates an average position.
@@ -24,19 +24,36 @@ This project allows users to control their mouse cursor using eye movements and 
 ✅ Plays a click sound when blinking
 ✅ Uses a 3x3 grid system for smoother tracking
 
-3️⃣ Installation & Setup
-📌 Requirements:
-Make sure you have Python installed and install the necessary libraries using:
 
-bash
+## Installation  
+1. Clone this repository:  
+git clone https://github.com/FariaSamanta/SHANA.git cd SHANA
+
+markdown
 Copy
 Edit
-pip install opencv-python dlib numpy pyautogui pygame
-📌 Download the required files:
 
-Place shape_predictor_68_face_landmarks.dat in the same folder as your script.
+2. Install dependencies:  
+pip install -r requirements.txt
 
-Place click_sound.mp3 in the same folder.
+markdown
+Copy
+Edit
+
+3. Extract the shape predictor model:  
+python extract_bz2.py
+
+shell
+Copy
+Edit
+
+## Usage  
+Run the main script:  
+python eye_tracking_cursor.py
+
+markdown
+Copy
+Edit
 
 📌 Run the code:
 
@@ -54,3 +71,23 @@ python eye_tracking_cursor.py
 ⚠ May need calibration for different lighting conditions.
 ⚠ Cursor movement can be refined for smoother control.
 ✨ Future improvement: Implement a larger grid system for more precise tracking.
+
+
+## Dependencies  
+- `OpenCV`  
+- `dlib`  
+- `numpy`  
+- `pygame` (for sound)  
+
+## Files in This Repository
+- `eye_tracking_cursor.py` – Main program  
+- `shape_predictor_68_face_landmarks.dat.bz2` – Model for face tracking (must be extracted)  
+- `click_sound.mp3` – Click sound effect  
+- `test_sound.py` – For testing the sound  
+
+## Contributors  
+- **Faria Samanta Akbar** 🎉  
+
+## License  
+This project is open-source. Feel free to modify and improve it!  
+
