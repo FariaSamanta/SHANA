@@ -1,2 +1,56 @@
 #Create code for projects in future
 This is the codespace for what i have in mind for my future research project
+
+
+📌 How Code Works (Overview)
+Your eye-tracking cursor with blink click system works in these steps:
+Captures video from your webcam.
+Detects your face and eyes using Dlib's face landmark predictor.
+Finds your eye positions and calculates an average position.
+Maps that position to a 3x3 grid (to determine cursor movement).
+Moves the mouse cursor based on where you're looking.
+Detects blinks using the Eye Aspect Ratio (EAR).
+Plays a click sound and triggers a mouse click when a blink is detected.
+
+
+
+1️⃣ Project Title & Description
+📌 Eye-Tracking Cursor with Blink Click
+This project allows users to control their mouse cursor using eye movements and perform a click action by blinking. It uses OpenCV, Dlib, PyAutoGUI, and Pygame for implementation.
+
+2️⃣ Features
+✅ Moves the cursor based on eye position
+✅ Clicks when you blink
+✅ Plays a click sound when blinking
+✅ Uses a 3x3 grid system for smoother tracking
+
+3️⃣ Installation & Setup
+📌 Requirements:
+Make sure you have Python installed and install the necessary libraries using:
+
+bash
+Copy
+Edit
+pip install opencv-python dlib numpy pyautogui pygame
+📌 Download the required files:
+
+Place shape_predictor_68_face_landmarks.dat in the same folder as your script.
+
+Place click_sound.mp3 in the same folder.
+
+📌 Run the code:
+
+bash
+Copy
+Edit
+python eye_tracking_cursor.py
+4️⃣ How to Use
+1️⃣ Run the script and look at different areas of the screen.
+2️⃣ Your cursor will follow your eye movements.
+3️⃣ Blink to trigger a mouse click.
+4️⃣ Press Q to exit.
+
+5️⃣ Known Issues & Future Improvements
+⚠ May need calibration for different lighting conditions.
+⚠ Cursor movement can be refined for smoother control.
+✨ Future improvement: Implement a larger grid system for more precise tracking.
