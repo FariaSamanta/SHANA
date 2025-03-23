@@ -1,3 +1,9 @@
+def main():
+    print("Starting eye tracking...")  # Replace with your tracking code
+
+if __name__ == "__main__":
+    main()
+
 import cv2 
 
 # Load the face and eye detection models  

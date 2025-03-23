@@ -6,76 +6,97 @@ import pygame
 
 # Initialize pygame mixer for sound
 pygame.mixer.init()
-click_sound = pygame.mixer.Sound("click_sound.mp3")  # Ensure this file exists in the same directory
+click_sound = pygame.mixer.Sound("click_sound.mp3")
 
-# Debug: Test if sound loads
-print("Sound file loaded:", pygame.mixer.get_init() is not None)
-
-# TEST: Play sound once before main loop
-pygame.mixer.Sound.play(click_sound)
-input("Did you hear the sound? Press Enter to continue...")
-
-# Initialize Dlib's face detector (HOG-based) and facial landmark predictor
+# Initialize Dlib's face detector and landmark predictor
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 
-# Capture video from the webcam
-cap = cv2.VideoCapture(0)
+# Start webcam capture
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Use DirectShow to avoid MSMF errors
 
-# Function to get the center of an eye
-def get_eye_position(landmarks, eye_points):
-    eye_x = np.mean([landmarks.part(point).x for point in eye_points])
-    eye_y = np.mean([landmarks.part(point).y for point in eye_points])
-    return int(eye_x), int(eye_y)
-
-# Function to calculate Eye Aspect Ratio (EAR)
 def calculate_ear(eye_points, landmarks):
+    """Calculate the Eye Aspect Ratio (EAR) to detect blinking."""
     A = np.linalg.norm(np.array((landmarks.part(eye_points[1]).x, landmarks.part(eye_points[1]).y)) - 
                         np.array((landmarks.part(eye_points[5]).x, landmarks.part(eye_points[5]).y)))
     B = np.linalg.norm(np.array((landmarks.part(eye_points[2]).x, landmarks.part(eye_points[2]).y)) - 
                         np.array((landmarks.part(eye_points[4]).x, landmarks.part(eye_points[4]).y)))
     C = np.linalg.norm(np.array((landmarks.part(eye_points[0]).x, landmarks.part(eye_points[0]).y)) - 
                         np.array((landmarks.part(eye_points[3]).x, landmarks.part(eye_points[3]).y)))
-    ear = (A + B) / (2.0 * C)
-    return ear
+    return (A + B) / (2.0 * C)
 
 # Blink detection parameters
-EAR_THRESHOLD = 0.2  # Threshold for detecting a blink
-BLINK_FRAMES = 3  # Number of consecutive frames to confirm a blink
+EAR_THRESHOLD = 0.2
+BLINK_FRAMES = 3
 blink_counter = 0
-blink_detected = False  # To prevent repeated detections in the same blink sequence
+open_counter = 0
+blink_detected = False
 
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
-    
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = detector(gray)
-    
-    for face in faces:
-        landmarks = predictor(gray, face)
+def run_eye_tracking():
+    global blink_counter, open_counter, blink_detected
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
         
-        # Blink detection
-        left_ear = calculate_ear([36, 37, 38, 39, 40, 41], landmarks)
-        right_ear = calculate_ear([42, 43, 44, 45, 46, 47], landmarks)
-        avg_ear = (left_ear + right_ear) / 2.0
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = detector(gray)
         
-        if avg_ear < EAR_THRESHOLD:
-            blink_counter += 1
-            if blink_counter >= BLINK_FRAMES and not blink_detected:
-                print("Blink detected!")  # Debug message
-                pygame.mixer.Sound.play(click_sound)  # Force play sound
-                pyautogui.click()  # Click event
-                blink_detected = True  # Prevent repeated clicks in one blink
-        else:
-            blink_counter = 0
-            blink_detected = False  # Reset detection for next blink
-    
-    cv2.imshow("Eye Tracking", frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        for face in faces:
+            # Draw a rectangle around the face
+            cv2.rectangle(frame, (face.left(), face.top()), (face.right(), face.bottom()), (255, 0, 255), 2)
 
-cap.release()
-cv2.destroyAllWindows()
+            landmarks = predictor(gray, face)
+            
+            # Eye landmark points
+            left_eye_pts = [36, 37, 38, 39, 40, 41]
+            right_eye_pts = [42, 43, 44, 45, 46, 47]
+            
+            left_ear = calculate_ear(left_eye_pts, landmarks)
+            right_ear = calculate_ear(right_eye_pts, landmarks)
+            avg_ear = (left_ear + right_ear) / 2.0
+            
+            # Get eye region points
+            left_eye = np.array([[landmarks.part(n).x, landmarks.part(n).y] for n in left_eye_pts])
+            right_eye = np.array([[landmarks.part(n).x, landmarks.part(n).y] for n in right_eye_pts])
+
+            # Draw eye bounding boxes
+            cv2.polylines(frame, [left_eye], True, (0, 255, 0), 1)  # Green
+            cv2.polylines(frame, [right_eye], True, (0, 255, 0), 1)  # Green
+
+            # ✅ Draw a blue dot on the pupil (approximation)
+            left_pupil = (int((landmarks.part(36).x + landmarks.part(39).x) / 2), int((landmarks.part(37).y + landmarks.part(41).y) / 2))
+            right_pupil = (int((landmarks.part(42).x + landmarks.part(45).x) / 2), int((landmarks.part(43).y + landmarks.part(47).y) / 2))
+            
+            cv2.circle(frame, left_pupil, 3, (255, 0, 0), -1)  # Blue dot on pupil
+            cv2.circle(frame, right_pupil, 3, (255, 0, 0), -1)  # Blue dot on pupil
+            
+            # ✅ Blink detection logic
+            if avg_ear < EAR_THRESHOLD:
+                blink_counter += 1
+                open_counter = 0  # Reset open counter
+                
+                if blink_counter >= BLINK_FRAMES and not blink_detected:
+                    print("Blink detected!")
+                    pygame.mixer.Sound.play(click_sound)
+                    pyautogui.click()
+                    blink_detected = True
+            else:
+                open_counter += 1
+                if open_counter > 5:  # Ensure eyes stay open before resetting blink detection
+                    blink_counter = 0
+                    blink_detected = False
+
+        cv2.imshow("Eye Tracking", frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+# Run the main function
+if __name__ == "__main__":
+    run_eye_tracking()
+
+
 
