@@ -54,3 +54,52 @@ python eye_tracking_cursor.py
 ⚠ May need calibration for different lighting conditions.
 ⚠ Cursor movement can be refined for smoother control.
 ✨ Future improvement: Implement a larger grid system for more precise tracking.
+
+## Installation  
+1. Clone this repository:  
+git clone https://github.com/FariaSamanta/SHANA.git cd SHANA
+
+markdown
+Copy
+Edit
+
+2. Install dependencies:  
+pip install -r requirements.txt
+
+markdown
+Copy
+Edit
+
+3. Extract the shape predictor model:  
+python extract_bz2.py
+
+shell
+Copy
+Edit
+
+## Usage  
+Run the main script:  
+python eye_tracking_cursor.py
+
+markdown
+Copy
+Edit
+
+## Dependencies  
+- `OpenCV`  
+- `dlib`  
+- `numpy`  
+- `pygame` (for sound)  
+
+## Files in This Repository
+- `eye_tracking_cursor.py` – Main program  
+- `shape_predictor_68_face_landmarks.dat.bz2` – Model for face tracking (must be extracted)  
+- `click_sound.mp3` – Click sound effect  
+- `test_sound.py` – For testing the sound  
+
+## Contributors  
+- **Faria Samanta Akbar** 🎉  
+
+## License  
+This project is open-source. Feel free to modify and improve it!  
+
