@@ -3,7 +3,7 @@ This is the codespace for what i have in mind for my future research project
 
 
 📌 How Code Works (Overview)
-Your eye-tracking cursor with blink click system works in these steps:
+My eye-tracking cursor with blink click system works in these steps:
 Captures video from your webcam.
 Detects your face and eyes using Dlib's face landmark predictor.
 Finds your eye positions and calculates an average position.
