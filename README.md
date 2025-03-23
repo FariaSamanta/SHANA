@@ -24,36 +24,6 @@ This project allows users to control their mouse cursor using eye movements and 
 ✅ Plays a click sound when blinking
 ✅ Uses a 3x3 grid system for smoother tracking
 
-3️⃣ Installation & Setup
-📌 Requirements:
-Make sure you have Python installed and install the necessary libraries using:
-
-bash
-Copy
-Edit
-pip install opencv-python dlib numpy pyautogui pygame
-📌 Download the required files:
-
-Place shape_predictor_68_face_landmarks.dat in the same folder as your script.
-
-Place click_sound.mp3 in the same folder.
-
-📌 Run the code:
-
-bash
-Copy
-Edit
-python eye_tracking_cursor.py
-4️⃣ How to Use
-1️⃣ Run the script and look at different areas of the screen.
-2️⃣ Your cursor will follow your eye movements.
-3️⃣ Blink to trigger a mouse click.
-4️⃣ Press Q to exit.
-
-5️⃣ Known Issues & Future Improvements
-⚠ May need calibration for different lighting conditions.
-⚠ Cursor movement can be refined for smoother control.
-✨ Future improvement: Implement a larger grid system for more precise tracking.
 
 ## Installation  
 1. Clone this repository:  
@@ -84,6 +54,24 @@ python eye_tracking_cursor.py
 markdown
 Copy
 Edit
+
+📌 Run the code:
+
+bash
+Copy
+Edit
+python eye_tracking_cursor.py
+4️⃣ How to Use
+1️⃣ Run the script and look at different areas of the screen.
+2️⃣ Your cursor will follow your eye movements.
+3️⃣ Blink to trigger a mouse click.
+4️⃣ Press Q to exit.
+
+5️⃣ Known Issues & Future Improvements
+⚠ May need calibration for different lighting conditions.
+⚠ Cursor movement can be refined for smoother control.
+✨ Future improvement: Implement a larger grid system for more precise tracking.
+
 
 ## Dependencies  
 - `OpenCV`  
